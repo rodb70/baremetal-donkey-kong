@@ -1,3 +1,7 @@
+#ifndef MY_LIB_H
+#define MY_LIB_H
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include "splash_screen.h"
 #include "win_screen.h"
@@ -11,12 +15,7 @@
 #include "barrel_three.h"
 #include "barrel_four.h"
 
-typedef unsigned int u32;
-
-#define REG_DISPCTL *(unsigned short *)0x4000000
-#define MODE3 3
-
-#define SCANLINECOUNTER *(volatile unsigned short *) 0x4000006
+#include "hardware.h"
 
 #define SCREENHEIGHT 149
 #define SCREENWIDTH 240
@@ -50,36 +49,16 @@ extern const unsigned char fontdata_6x8[12288];
 
 #define KEY_DOWN_NOW(key) (~(BUTTONS) & key)
 
-#define BUTTONS *(volatile unsigned int *)0x4000130
-
-/* DMA */
-#define REG_DMA0SAD *(volatile u32*)0x40000B0 		// source address
-#define REG_DMA0DAD *(volatile u32*)0x40000B4       // destination address
-#define REG_DMA0CNT *(volatile u32*)0x40000B8       // control register
-
-// DMA channel 1 register definitions
-#define REG_DMA1SAD *(volatile u32*)0x40000BC 		// source address
-#define REG_DMA1DAD *(volatile u32*)0x40000C0       // destination address
-#define REG_DMA1CNT *(volatile u32*)0x40000C4       // control register
-
-// DMA channel 2 register definitions
-#define REG_DMA2SAD *(volatile u32*)0x40000C8 		// source address
-#define REG_DMA2DAD *(volatile u32*)0x40000CC       // destination address
-#define REG_DMA2CNT *(volatile u32*)0x40000D0       // control register
-
-// DMA channel 3 register definitions
-#define REG_DMA3SAD *(volatile u32*)0x40000D4 		// source address
-#define REG_DMA3DAD *(volatile u32*)0x40000D8       // destination address
-#define REG_DMA3CNT *(volatile u32*)0x40000DC       // control register
-
-
-typedef struct {
+typedef struct
+{
 	const volatile void *src;
 	volatile void *dst;
 	unsigned int cnt;
+
 } DMA_CONTROLLER;
 
-struct MARIO {
+struct MARIO
+{
 	int row;
 	int col;
 	int prev_row;
@@ -89,7 +68,8 @@ struct MARIO {
 	int is_left;
 };
 
-struct BARREL {
+struct BARREL
+{
 	int row;
 	int col;
 	int width;
@@ -97,57 +77,27 @@ struct BARREL {
 	int orientation;
 };
 
-struct LADDER {
+struct LADDER
+{
 	int row;
 	int col;
 	int width;
 	int height;
 };
 
-struct DONKEY_KONG {
+struct DONKEY_KONG
+{
 	int row;
 	int col;
 	int width;
 	int height;
 };
-
-#define DMA ((volatile DMA_CONTROLLER *) 0x040000B0)
-
-// Defines
-#define DMA_CHANNEL_0 0
-#define DMA_CHANNEL_1 1
-#define DMA_CHANNEL_2 2
-#define DMA_CHANNEL_3 3
-
-#define DMA_DESTINATION_INCREMENT (0 << 21)
-#define DMA_DESTINATION_DECREMENT (1 << 21)
-#define DMA_DESTINATION_FIXED (2 << 21)
-
-
-#define DMA_SOURCE_INCREMENT (0 << 23)
-#define DMA_SOURCE_DECREMENT (1 << 23)
-#define DMA_SOURCE_FIXED (2 << 23)
-
-#define DMA_REPEAT (1 << 25)
-
-#define DMA_16 (0 << 26)
-#define DMA_32 (1 << 26)
-
-#define DMA_NOW (0 << 28)
-#define DMA_AT_VBLANK (1 << 28)
-#define DMA_AT_HBLANK (2 << 28)
-#define DMA_AT_REFRESH (3 << 28)
-
-#define DMA_IRQ (1 << 30)
-#define DMA_ON (1 << 31)
-
-unsigned short *videoBuffer = (unsigned short *) 0x6000000;
 
 // Prototypes
 void setPixel(int row, int col, unsigned short color);
 void drawRect(int row, int col, int height, int width, unsigned short color);
 void delay(int n);
-void waitForVblank();
+void waitForVblank(void);
 void drawChar(int row, int col, char ch, unsigned short color);
 void drawString(int row, int col, char str[], unsigned short color);
 void drawHorizontal(int col, int width, int row, unsigned int color);
@@ -159,7 +109,8 @@ void background(int height, int width, unsigned short color);
 void drawVertical(int row, int col, int height, int width, unsigned int color);
 int hitBarrel(int row_one, int col_one, int height_one, int width_one, int row_two, int col_two, int height_two, int width_two);
 
-enum {
+enum
+{
 	START,
 	GAME,
 	LOSE,
@@ -167,23 +118,20 @@ enum {
 	PAUSE
 };
 
-typedef enum {
-	false, 
-	true
-} bool;
+extern int state;
+extern int score;
+extern char buffer[ 41 ];
 
-int state;
-int score = 0;
-char buffer[41];
+extern struct MARIO mario;
+extern struct DONKEY_KONG donkey_kong;
+extern struct LADDER ladder_one;
+extern struct LADDER ladder_two;
+extern struct BARREL barrel_level_one;
+extern struct BARREL barrel_level_two;
+extern struct BARREL barrel_level_three;
 
-struct MARIO mario;
-struct DONKEY_KONG donkey_kong;
-struct LADDER ladder_one;
-struct LADDER ladder_two;
-struct BARREL barrel_level_one;
-struct BARREL barrel_level_two;
-struct BARREL barrel_level_three;
+extern uint16_t bgcolor;
+extern bool up;
+extern bool paused;
 
-int bgcolor = BLACK;
-bool up = false;
-bool paused = false;
+#endif /* MY_LIB_H */

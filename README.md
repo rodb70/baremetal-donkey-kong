@@ -12,16 +12,16 @@ Install​ GBA​ emulator​ and​ compiler​ toolchain.</br>
 ```sudo​ apt-get​ install​ cs2110-vbam-sdl```</br>
 
 Clone directory.</br>
-```git clone https://github.com/tomonarifeehan/DonkeyKong.git```</br>
+```git clone https://github.com/rodb70/baremetal-donkey-kong.git```</br>
 
 Change directory.</br>
-```cd DonkeyKong\src```</br>
+```cd baremetal-donkey-kong```</br>
 
 Removes all compiled files.</br>
 ```make clean```</br>
 
 Compiles source code.</br>
-```make vba```</br>
+```make CPU=host```</br>
 
 ## Executable
 
