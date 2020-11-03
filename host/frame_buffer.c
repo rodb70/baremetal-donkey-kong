@@ -11,10 +11,13 @@ typedef struct
     SDL_Renderer *renderer;
     SDL_Texture *texture;
     uint16_t tft_fb[ SCREENHEIGHT ][ SCREENWIDTH ];
+    //uint16_t tft_fb1[ SCREENHEIGHT ][ SCREENWIDTH ];
 
 } monitor_t;
 
 uint16_t *videoBuffer;
+uint32_t buttons = ~( 0 );
+
 
 static monitor_t monitor = { 0 };
 monitor_t *m = &monitor;
@@ -40,6 +43,7 @@ int quit_filter(void *userdata, SDL_Event *event)
 
 volatile uint32_t* frame_buffer_init(void)
 {
+    buttons = ~( 0 );
     /* Initialise the SDL */
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
@@ -56,7 +60,7 @@ volatile uint32_t* frame_buffer_init(void)
     m->renderer = SDL_CreateRenderer( m->window, -1, SDL_RENDERER_SOFTWARE );
     assert( m->renderer );
 
-    m->texture = SDL_CreateTexture( m->renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_STATIC,
+    m->texture = SDL_CreateTexture( m->renderer, SDL_PIXELFORMAT_BGR555, SDL_TEXTUREACCESS_STATIC,
                                     SCREENWIDTH, SCREENHEIGHT );
     assert( m->texture );
 
@@ -85,7 +89,7 @@ int frame_buffer_switch(int offset)
     return 0;
 }
 
-void drawRect(int row, int col, int height, int width, unsigned short color)
+void drawRect(int col, int row, int height, int width, unsigned short color)
 {
     for( int h = 0; h < height; h++ )
     {
@@ -126,9 +130,9 @@ void drawImage3(int row, int col, int height, int width, const unsigned short *i
 
 void drawHorizontal(int row, int col, int width, unsigned int color)
 {
-    for( int i = 0; i < width; i++ )
+    for( int r = 0; r < width; r++ )
     {
-        m->tft_fb[col][row+i] = color;
+        m->tft_fb[ col ][ row + r ] = color;
     }
 }
 
@@ -138,12 +142,10 @@ void drawVertical(int row, int col, int height, int width, unsigned int color)
     {
         for( int r = 0; r < width; r++ )
         {
-            m->tft_fb[ col+c][row+r] = color;
+            m->tft_fb[ col + c ][ row + r ] = color;
         }
     }
 }
-
-uint32_t buttons = ~( 0 );
 
 uint32_t poll_controller(uint32_t delay)
 {
@@ -163,7 +165,21 @@ uint32_t poll_controller(uint32_t delay)
             mask |= BUTTON_B;
             break;
 
+        case SDLK_q :
+            mask |= BUTTON_L;
+            break;
+
+        case SDLK_w :
+            mask |= BUTTON_R;
+            break;
+
         case SDLK_SPACE :
+            mask |= BUTTON_SELECT;
+            break;
+
+        case SDLK_RETURN2 :
+        case SDLK_RETURN :
+            mask |= BUTTON_START;
             break;
 
         case SDLK_KP_0 :
@@ -223,7 +239,7 @@ uint32_t poll_controller(uint32_t delay)
     return buttons;
 }
 
-uint32_t button_set( void )
+uint32_t button_get( void )
 {
     return buttons;
 }

@@ -17,7 +17,7 @@
 
 #include "hardware.h"
 
-#define SCREENHEIGHT 149
+#define SCREENHEIGHT 160
 #define SCREENWIDTH 240
 
 #define BG2_ENABLE (1 << 10)
@@ -31,6 +31,8 @@
 #define BLACK COLOR(0, 0, 0)
 #define BROWN COLOR(165, 42, 42)
 #define GRAY COLOR (26, 26, 26)
+
+#define LADDER_WIDTH 20
 
 extern const unsigned char fontdata_6x8[12288];
 
@@ -103,11 +105,11 @@ void drawString(int row, int col, char str[], unsigned short color);
 void drawHorizontal(int col, int width, int row, unsigned int color);
 void drawRect2(int row, int col, int height, int width, unsigned short color);
 void drawFullscreenImage(const unsigned short *image);
-void drawImage3(int row, int col, int height, int width, const unsigned short *image);
-void drawLadder(int row, int col, int height, int width, unsigned int color);
+void drawImage3(int col, int row, int height, int width, const unsigned short *image);
+void drawLadder(int col, int row, int height, int width, unsigned int color);
 void background(int height, int width, unsigned short color);
-void drawVertical(int row, int col, int height, int width, unsigned int color);
-int hitBarrel(int row_one, int col_one, int height_one, int width_one, int row_two, int col_two, int height_two, int width_two);
+void drawVertical(int col, int row, int height, int width, unsigned int color);
+int hitBarrel(int col_one, int row_one, int height_one, int width_one, int row_two, int col_two, int height_two, int width_two);
 
 enum
 {
