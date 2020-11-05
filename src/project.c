@@ -3,7 +3,7 @@
 
 int state;
 int score = 0;
-char buffer[41];
+char buffer[ 41 ];
 
 struct MARIO mario;
 struct DONKEY_KONG donkey_kong;
@@ -21,6 +21,9 @@ void init( void )
 {
     hardware_video_init( &bgcolor );
 
+    snprintf(buffer, sizeof(buffer), "Score: %d", score);
+    drawString( 150, 5, buffer, RED);
+
     // Initialise mario
     mario.row = SCREENWIDTH - 15;
     mario.col = SCREENHEIGHT - 36;
@@ -35,14 +38,12 @@ void init( void )
     donkey_kong.height = 43;
 
     // Initialise ladder_one
-    //drawLadder( 40, SCREENWIDTH - 10, 50, 1, BLUE );
     ladder_one.col = 40;
     ladder_one.row = SCREENWIDTH - 10;
     ladder_one.width = LADDER_WIDTH;
     ladder_one.height = 50;
 
     // Initialise ladder_two
-    //drawLadder( 90, 30, 50, 1, BLUE );
     ladder_two.col = 90;
     ladder_two.row = 30;
     ladder_two.width = LADDER_WIDTH;
@@ -70,7 +71,7 @@ void init( void )
     barrel_level_three.orientation = 0;
 
     drawFullscreenImage( splash_screen );
-    sprintf( buffer, "Press 'Enter'." );
+    snprintf(buffer, sizeof(buffer),  "Press 'Enter'." );
     drawString( 100, 80, buffer, WHITE );
     state = START;
     score = 0;
@@ -119,14 +120,12 @@ int main(void)
                     if( mario.row > ( ladder_two.row - LADDER_WIDTH ) && mario.row < ladder_two.row &&
                         mario.col > ( ladder_two.col - mario.height ) && mario.col < 125 )
                     {
-                        printf( "6 mario.col=%d mario.is_left=%d\n", mario.col, mario.is_left );
                         mario.col--;
                         mario.is_left = 2;
                     }
                     else if( mario.row > ( ladder_one.row - LADDER_WIDTH ) && mario.row < ladder_one.row &&
                              mario.col > ( ladder_one.col - mario.height ) && mario.col < 75 )
                     {
-                        printf( "5 mario.col=%d mario.is_left=%d\n", mario.col, mario.is_left );
                         mario.col--;
                         mario.is_left = 2;
                     }
@@ -154,7 +153,6 @@ int main(void)
             if( !( mario.row > ( ladder_two.row - LADDER_WIDTH ) && mario.row < ladder_two.row ) &&
                     mario.col > ladder_two.height + mario.height + 8 )
             {
-                printf( "2 mario.col=%d mario.row=%d\n", mario.col, mario.row );
                 if(( mario.col + mario.height < 140 ) && ( up == false ))
                 {
                     mario.col += 2;
@@ -188,7 +186,6 @@ int main(void)
             else if( !(mario.row > ladder_one.row - 35 && mario.row < ladder_one.row ) &&
                      mario.col > mario.height + 8 )
             {
-                printf( "1 mario.col=%d mario.row=%d\n", mario.col, mario.row );
                 if((( mario.col + mario.height ) < 90 ) && ( up == false ))
                 {
                     mario.col += 2;
@@ -220,7 +217,6 @@ int main(void)
             }
             else
             {
-                printf( "0 mario.col=%d mario.row=%d ", mario.col, mario.row );
                 if(( mario.col + mario.height < 40 ) && ( up == false ))
                 {
                     mario.col += 2;
@@ -251,7 +247,6 @@ int main(void)
                 {
                     mario.col -= 2;
                 }
-                printf( "\n" );
             }
 
             //Draw background and floors
@@ -392,9 +387,75 @@ int main(void)
                 drawImage3( mario.row, mario.col, mario.width, mario.height, mario_buttcheek );
             }
 
-            //Update Ladder
+            // Update Ladder
             drawLadder( ladder_one.row, ladder_one.col, ladder_one.height, ladder_one.width, BLUE );
             drawLadder( ladder_two.row, ladder_two.col, ladder_two.height, ladder_two.width, BLUE );
+
+            // Update Score barrel_three
+            if( mario.col < 124 && mario.col > 100 && ( mario.row == barrel_level_three.row - 2 ))
+            {
+                score++;
+            }
+            else if( mario.col < 124 && mario.col > 100 && ( mario.row == barrel_level_three.row - 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 124 && mario.col > 100 && ( mario.row == barrel_level_three.row ))
+            {
+                score++;
+            }
+            else if( mario.col < 124 && mario.col > 100 && ( mario.row == barrel_level_three.row + 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 124 && mario.col > 100 && ( mario.row == barrel_level_three.row + 2 ))
+            {
+                score++;
+            }
+            // Update Score barrel_two
+            else if( mario.col < 90 && mario.col > 40 && ( mario.row == barrel_level_two.row - 2 ))
+            {
+                score++;
+            }
+            else if( mario.col < 90 && mario.col > 40 && ( mario.row == barrel_level_two.row - 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 90 && mario.col > 40 && ( mario.row == barrel_level_two.row ))
+            {
+                score++;
+            }
+            else if( mario.col < 90 && mario.col > 40 && ( mario.row == barrel_level_two.row + 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 90 && mario.col > 40 && ( mario.row == barrel_level_two.row + 2 ))
+            {
+                score++;
+            }
+            // Update Score barrel_one
+            else if( mario.col < 40 && ( mario.row == barrel_level_one.row - 2 ))
+            {
+                score++;
+            }
+            else if( mario.col < 40 && ( mario.row == barrel_level_one.row - 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 40 && ( mario.row == barrel_level_one.row ))
+            {
+                score++;
+            }
+            else if( mario.col < 40 && ( mario.row == barrel_level_one.row + 1 ))
+            {
+                score++;
+            }
+            else if( mario.col < 40 && ( mario.row == barrel_level_one.row + 2 ))
+            {
+                score++;
+            }
+            snprintf( buffer, sizeof( buffer ), "Score: %d", score);
+            drawString(150, 5, buffer, GREEN);
 
             if(( mario.col < donkey_kong.col + donkey_kong.width ) && mario.row < 40 )
             {
@@ -417,24 +478,28 @@ int main(void)
 
         case WIN:
             drawFullscreenImage( win_screen );
+            snprintf(buffer, sizeof(buffer),  "Score: %d", score );
+            drawString( 150, 175, buffer, GREEN );
             break;
 
         case LOSE:
             drawFullscreenImage( game_over );
+            snprintf(buffer, sizeof(buffer),  "Score: %d", score );
+            drawString( 150, 175, buffer, GREEN );
             break;
 
         case PAUSE:
             //background(160, 240, BLACK);
-            sprintf( buffer, "PAUSED" );
+            snprintf(buffer, sizeof(buffer),  "PAUSED" );
             drawString( 80, 105, buffer, WHITE );
-            sprintf( buffer, "Press 'Enter'." );
+            snprintf(buffer, sizeof(buffer),  "Press 'Enter'." );
             drawString( 100, 80, buffer, WHITE );
-            if( KEY_DOWN_NOW( BUTTON_START ) )
+            if( KEY_DOWN_NOW( BUTTON_START ))
             {
                 state = GAME;
             }
-
         }
+
         waitForVblank();
         if( KEY_DOWN_NOW( BUTTON_SELECT ) )
         {
