@@ -6,7 +6,7 @@ COMPILER := gcc
 
 #CPU := rpi1
 CPU := host
-BLD_TARGET := donky-kong
+BLD_TARGET := donkey-kong
 BLD_TYPE := debug
 
 ifeq ($(CPU),rpi1)
